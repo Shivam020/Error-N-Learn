@@ -10,6 +10,7 @@ from .views import (
     joinClassroomView,
     LeaveClassroomView,
     event_list,
+    JoinMeetingView,
 )
 
 app_name = "students"
@@ -33,4 +34,5 @@ urlpatterns = [
     path("join-new/", joinClassroomView, name="join_classroom"),
     path("event_list/", event_list, name="event_list"),  # Remove the 'views.' prefix
     path("leave-classroom/<slug:code>/", LeaveClassroomView, name="leave_classroom"),
+    path('join/', JoinMeetingView.as_view(), name='join'),
 ]

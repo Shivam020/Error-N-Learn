@@ -21,8 +21,20 @@ from accounts.models import (
 )
 from accounts.passtests import StudentTestMixin, TeacherTestMixin
 from .forms import AssignmentSubmissionForm, JoinClassroomForm
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
+from .forms import JoinMeetingForm  # Ensure you create this form if needed
 
-# Create your views here.
+class JoinMeetingView(FormView):
+    template_name = 'students/join.html'
+    form_class = JoinMeetingForm  # Ensure you create this form if needed
+    success_url = reverse_lazy('students:dashboard')  # Redirect to a relevant page after join
+
+    def form_valid(self, form):
+        # Handle the form submission, e.g., join the meeting using the room ID
+        room_id = form.cleaned_data['roomID']
+        # Implement logic to handle the room ID and join the meeting
+        return super().form_valid(form)
 
 
 class DashboardView(StudentTestMixin, TemplateView):
