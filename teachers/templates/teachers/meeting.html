@@ -1,0 +1,92 @@
+{% extends 'teachers/base.html' %}
+
+{% block title %}Create Meeting{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Start of Meeting Container -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h1>Create Meeting</h1>
+            <br>
+            <!-- Meeting UI Container -->
+            <div id="meeting-container" class="responsive-container"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Back to Dashboard Button -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
+    <a class="btn btn-secondary" href="{% url 'dashboard' %}">Back to Dashboard</a>
+</div>
+
+<!-- Zego UIKit Script -->
+<script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+<script>
+window.onload = function () {
+    function getUrlParams(url) {
+        let urlStr = url.split('?')[1];
+        const urlSearchParams = new URLSearchParams(urlStr);
+        const result = Object.fromEntries(urlSearchParams.entries());
+        return result;
+    }
+
+    const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
+    const userID = Math.floor(Math.random() * 10000) + "";
+    const userName = "User"; // Default username if not provided
+    const appID = 1886579562; // Replace with your actual appID
+    const serverSecret = 'fdf69e06067662bc77e6190165db4f9e'; // Replace with your actual serverSecret
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
+
+    if (ZegoUIKitPrebuilt) {
+        const zp = ZegoUIKitPrebuilt.create(kitToken);
+        zp.joinRoom({
+            container: document.querySelector("#meeting-container"),
+            sharedLinks: [{
+                name: 'Personal link',
+                url: window.location.protocol + '//' + window.location.host  + window.location.pathname + '?roomID=' + roomID,
+            }],
+            scenario: {
+                mode: ZegoUIKitPrebuilt.VideoConference,
+            },
+            turnOnMicrophoneWhenJoining: true,
+            turnOnCameraWhenJoining: true,
+            showMyCameraToggleButton: true,
+            showMyMicrophoneToggleButton: true,
+            showAudioVideoSettingsButton: true,
+            showScreenSharingButton: true,
+            showTextChat: true,
+            showUserList: true,
+            maxUsers: 2,
+            layout: "Auto",
+            showLayoutButton: false,
+        });
+    } else {
+        console.error("ZegoUIKitPrebuilt is not loaded properly.");
+    }
+}
+</script>
+
+<!-- Custom CSS for Responsiveness -->
+<style>
+    .responsive-container {
+        width: 100%;
+        height: 80vh; /* Adjust this as needed */
+        max-width: 1200px; /* Optional: Set a maximum width */
+        margin: 0 auto; /* Center the container horizontally */
+    }
+
+    @media (max-width: 768px) {
+        .responsive-container {
+            height: 60vh; /* Reduce height on smaller screens */
+        }
+    }
+
+    @media (max-width: 576px) {
+        .responsive-container {
+            height: 50vh; /* Further reduce height on very small screens */
+        }
+    }
+</style>
+
+{% endblock content %}

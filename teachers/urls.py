@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 from .views import (DashboardView, 
                     ClassroomCreateView, 
                     ClassroomDeleteView, 
@@ -13,6 +13,8 @@ from .views import (DashboardView,
                     AssignmentDeleteView,
                     AssignmentSubmissionsView,
                     ClassroomStudentsView,
+                    CreateMeetingView,
+                    MeetingRoomView  # Make sure to import MeetingRoomView
                 )
 
 app_name = 'teachers'
@@ -32,4 +34,6 @@ urlpatterns = [
     path('assignments/<int:pk>/add/',       AssignmentCreateView.as_view(), name='add_assignment'),
     path('assignments/delete/<int:pk>/',    AssignmentDeleteView.as_view(), name='delete_assignment'),
     path('submissions/<int:pk>/',           AssignmentSubmissionsView,      name='assignment_submissions'),
+    path('create_meeting/',                 CreateMeetingView.as_view(),    name='create_meeting'),
+    path('meeting/',                       MeetingRoomView.as_view(),      name='meeting_room'),  # Added URL pattern for MeetingRoomView
 ]
