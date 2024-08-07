@@ -121,7 +121,8 @@ def joinClassroomView(request):
                     )
                     return HttpResponseRedirect(reverse("students:dashboard"))
     return render(request, "students/join_classroom.html", {"form": form})
-
+def event_list(request):
+    return render(request, "teachers/event_list.html")
 def LeaveClassroomView(request, code):
     request.user.students.classrooms.remove(Classroom.objects.filter(code=code).first())
     return HttpResponseRedirect(reverse("students:dashboard"))
