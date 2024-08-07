@@ -38,7 +38,6 @@
         display: flex;
         flex-direction: column;
         background-color: #ffffff; /* Background color */
-        border: 2px solid #333333; /* Darker border color */
         border-radius: 10px; /* Rounded corners */
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Floating effect */
         transition: transform 0.1s, box-shadow 0.1s; /* Smooth transition */
@@ -46,7 +45,7 @@
 
     .card:hover {
         transform: translateY(-5px); /* Floating effect on hover */
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+       
     }
 
     .card-header {
@@ -69,7 +68,7 @@
         <div class="col-md-3 mb-4"> <!-- 3 columns for 4 cards per row -->
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #4874db;">
-                    <h6><b>{{ classroom.subject|upper }}</b></h6>
+                    <h6>{{ classroom.subject|upper }}</h6>
                     <div class="dropdown no-arrow">
                         <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-toggle="dropdown" type="button">
                             <i class="fas fa-ellipsis-v text-gray-400"></i>
