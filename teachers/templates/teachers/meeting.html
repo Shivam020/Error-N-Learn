@@ -9,8 +9,44 @@
         <div class="card-body">
             <h1>Create Meeting</h1>
             <br>
+            <!-- Room ID Display -->
+            <div class="room-id-container d-flex align-items-center mb-3">
+                <div class="custom-room-id-display d-flex align-items-center flex-grow-1">
+                    <span class="room-id-label">Room ID:</span>
+                    <span id="room-id" class="room-id-value"></span>
+                    <button id="send-room-id-button" class="btn btn-primary ms-3">
+                        <svg id="send-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                          <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                        </svg>
+                        <svg id="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-check" viewBox="0 0 16 16" style="display: none;">
+                          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372zm-2.54 1.183L5.93 9.363 1.591 6.602z"/>
+                          <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/>
+                        </svg>
+                        <span id="button-text" class="ms-2">Send Room ID</span>
+                    </button>
+                </div>
+            </div>
+            <br>
+            <!-- Notification Alert -->
+            <div id="alert-box" class="alert-box">
+                <p id="alert-message">Notification Sent</p>
+            </div>
+            <br>
             <!-- Meeting UI Container -->
-            <div id="meeting-container" class="responsive-container"></div>
+            <div id="meeting-container" class="responsive-container">
+                <div class="meeting-info">
+                    <div class="join-room">
+                        <div class="section-title">Join Room</div>
+                        <input class="form-control" placeholder="Your name" value="User" />
+                        <button class="btn btn-primary join-button">Join</button>
+                    </div>
+                    <div class="share-link">
+                        <div class="section-title">Share the link</div>
+                        <input class="form-control" placeholder="Invite Link" readonly />
+                        <button class="btn btn-secondary copy-link-button">Copy Link</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -23,7 +59,7 @@
 <!-- Zego UIKit Script -->
 <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
 <script>
-window.onload = function () {
+document.addEventListener('DOMContentLoaded', function () {
     function getUrlParams(url) {
         let urlStr = url.split('?')[1];
         const urlSearchParams = new URLSearchParams(urlStr);
@@ -38,13 +74,38 @@ window.onload = function () {
     const serverSecret = 'fdf69e06067662bc77e6190165db4f9e'; // Replace with your actual serverSecret
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
 
+    // Display Room ID
+    document.getElementById('room-id').innerText = roomID;
+
+    // Handle Send Room ID button click
+    document.getElementById('send-room-id-button').onclick = function() {
+        // Change button text and animate icon
+        const buttonText = document.getElementById('button-text');
+        buttonText.innerText = 'Notification Sent';
+
+        // Toggle icons
+        const sendIcon = document.getElementById('send-icon');
+        const checkIcon = document.getElementById('check-icon');
+        sendIcon.style.display = 'none';
+        checkIcon.style.display = 'inline';
+        checkIcon.classList.add('animate-check');
+
+        // Show alert
+        const alertBox = document.getElementById('alert-box');
+        alertBox.style.display = 'flex'; // Show alert box
+        setTimeout(function() {
+            alertBox.style.display = 'none'; // Hide alert after 2 seconds
+        }, 2000); // Hide alert after 2 seconds
+    };
+
     if (ZegoUIKitPrebuilt) {
         const zp = ZegoUIKitPrebuilt.create(kitToken);
         zp.joinRoom({
             container: document.querySelector("#meeting-container"),
             sharedLinks: [{
                 name: 'Personal link',
-                url: window.location.protocol + '//' + window.location.host  + window.location.pathname + '?roomID=' + roomID,
+                code: 'Room ID: ' + roomID,
+                url: window.location.protocol + '//' + window.location.host + window.location.pathname + '?roomID=' + roomID,
             }],
             scenario: {
                 mode: ZegoUIKitPrebuilt.VideoConference,
@@ -58,35 +119,113 @@ window.onload = function () {
             showTextChat: true,
             showUserList: true,
             maxUsers: 2,
-            layout: "Auto",
-            showLayoutButton: false,
         });
-    } else {
-        console.error("ZegoUIKitPrebuilt is not loaded properly.");
     }
-}
+});
 </script>
 
-<!-- Custom CSS for Responsiveness -->
+<!-- Custom CSS for Layout and Animation -->
 <style>
+    .room-id-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .custom-room-id-display {
+        background-color: #ffffff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .room-id-label {
+        margin-right: 10px;
+    }
+
+    .room-id-value {
+        margin-right: 10px;
+        flex-grow: 1;
+    }
+
+    .icon-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .bi {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        transition: opacity 0.5s ease;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
     .responsive-container {
         width: 100%;
-        height: 80vh; /* Adjust this as needed */
-        max-width: 1200px; /* Optional: Set a maximum width */
-        margin: 0 auto; /* Center the container horizontally */
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px;
     }
 
-    @media (max-width: 768px) {
-        .responsive-container {
-            height: 60vh; /* Reduce height on smaller screens */
-        }
+    #meeting-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: auto;
     }
 
-    @media (max-width: 576px) {
-        .responsive-container {
-            height: 50vh; /* Further reduce height on very small screens */
-        }
+    .alert-box {
+        background-color: #ffffff; /* Match background color */
+        color: #333; /* Text color for readability */
+        padding: 10px 20px; /* Increase padding for better spacing */
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        display: none; /* Hide alert initially */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        height: 50px; /* Set a specific height */
+        margin-bottom: 15px;
+        text-align: center; /* Center text horizontally */
+        width: 100%; /* Make it responsive */
+        max-width: 300px; /* Limit max-width for better layout */
+        position: absolute; /* Position relative to container */
+        top: 10px; /* Position from top */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Adjust horizontal position */
+    }
+
+    #alert-message {
+        margin: 0; /* Remove default margin */
+    }
+
+    .animate-check {
+        animation: checkmark 0.5s ease;
+    }
+
+    @keyframes checkmark {
+        0% { transform: scale(0); }
+        100% { transform: scale(1); }
+    }
+
+    .custom-alert {
+        background-color: #ffffff; /* Match background color */
+        color: #333; /* Text color for readability */
     }
 </style>
 
-{% endblock content %}
+{% endblock %}
