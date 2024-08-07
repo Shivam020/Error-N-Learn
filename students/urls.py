@@ -11,6 +11,7 @@ from .views import (
     LeaveClassroomView,
     event_list,
     JoinMeetingView,
+    MeetingRoomView,
 )
 
 app_name = "students"
@@ -32,7 +33,8 @@ urlpatterns = [
         name="delete_submission",
     ),
     path("join-new/", joinClassroomView, name="join_classroom"),
-    path("event_list/", event_list, name="event_list"),  # Remove the 'views.' prefix
+    path("event_list/", event_list, name="event_list"),
     path("leave-classroom/<slug:code>/", LeaveClassroomView, name="leave_classroom"),
     path('join/', JoinMeetingView.as_view(), name='join'),
+    path('meeting/<str:room_id>/', MeetingRoomView.as_view(), name='meeting_room'),
 ]
