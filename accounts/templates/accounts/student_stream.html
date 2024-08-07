@@ -5,17 +5,15 @@
 
 <!-- Body Content Block -->
 {% block content %}
+<div class="col-lg-10 mx-auto d-flex justify-content-center flex-wrap">
 
-<div class="jumbotron  my-auto">
+<div class="jumbotron my-auto text-center">
     <h1 class="display-3">Select Your Stream</h1>
     <hr class="my-2">
-
-    <div class="col-lg-10 mx-auto">
-
         <!-- For Loop -->
         {% for stream in stream_list %}
 
-        <a class="btn btn-success" style=" margin: 1em;" href="{% url 'accounts:student_signup' stream.pk %}" role="button">
+        <a class="btn btn-success m-2" href="{% url 'accounts:student_signup' stream.pk %}" role="button">
             {{stream.name}}
         </a>
 
@@ -24,8 +22,4 @@
 
     </div>
 </div>
-
-
-
-<!-- End Block -->
 {% endblock content %}
