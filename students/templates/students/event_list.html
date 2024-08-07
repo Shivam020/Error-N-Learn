@@ -1,6 +1,6 @@
 {% extends 'students/base.html' %}
 
-{% block title %}Event Scheduler{% endblock title %}
+{% block title %}Event Scheduler{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -8,6 +8,13 @@
     <div id="calendar"></div>
 </div>
 
+<!-- FullCalendar CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.css" rel="stylesheet" />
+
+<!-- FullCalendar JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.js"></script>
+
+<!-- Custom JS to initialize FullCalendar -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
@@ -35,4 +42,4 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.render();
 });
 </script>
-{% endblock content %}
+{% endblock %}
