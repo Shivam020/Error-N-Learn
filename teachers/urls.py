@@ -14,6 +14,7 @@ from .views import (DashboardView,
                     AssignmentSubmissionsView,
                     ClassroomStudentsView,
                     CreateMeetingView,
+                    event_list,
                     MeetingRoomView  # Make sure to import MeetingRoomView
                 )
 
@@ -35,5 +36,6 @@ urlpatterns = [
     path('assignments/delete/<int:pk>/',    AssignmentDeleteView.as_view(), name='delete_assignment'),
     path('submissions/<int:pk>/',           AssignmentSubmissionsView,      name='assignment_submissions'),
     path('create_meeting/',                 CreateMeetingView.as_view(),    name='create_meeting'),
-    path('meeting/',                       MeetingRoomView.as_view(),      name='meeting_room'),  # Added URL pattern for MeetingRoomView
+    path('meeting/',                       MeetingRoomView.as_view(),      name='meeting_room'), 
+     path("event_list/", event_list, name="event_list"), # Added URL pattern for MeetingRoomView
 ]

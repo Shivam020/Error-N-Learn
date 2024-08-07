@@ -31,6 +31,8 @@ class ClassroomCreateView(CreateView):
     
     def get_success_url(self):
         return reverse('teachers:dashboard')
+def event_list(request):
+    return render(request, "teachers/event_list.html")
 
 class ClassroomDeleteView(DeleteView):
     model = Classroom
