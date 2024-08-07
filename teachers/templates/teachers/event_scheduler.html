@@ -1,4 +1,4 @@
-{% extends 'students/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Event Scheduler{% endblock %}
 
@@ -9,12 +9,15 @@
 </div>
 
 <!-- FullCalendar CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.css" rel="stylesheet" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.css' rel='stylesheet' />
+
+<!-- Your Custom CSS -->
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
 <!-- FullCalendar JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.0/main.min.js'></script>
 
-<!-- Custom JS to initialize FullCalendar -->
+<!-- Your Custom JS -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');

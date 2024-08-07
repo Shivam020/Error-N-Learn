@@ -20,30 +20,23 @@ from accounts.models import (
     AssignmentSubmission,
 )
 from accounts.passtests import StudentTestMixin, TeacherTestMixin
-from .forms import AssignmentSubmissionForm, JoinClassroomForm
+from .forms import AssignmentSubmissionForm, JoinClassroomForm, JoinMeetingForm
 from django.views.generic.edit import FormView
-from django.urls import reverse_lazy
-from .forms import JoinMeetingForm  # Ensure you create this form if needed
 
 class JoinMeetingView(FormView):
     template_name = 'students/join.html'
-    form_class = JoinMeetingForm  # Ensure you create this form if needed
-    success_url = reverse_lazy('students:dashboard')  # Redirect to a relevant page after join
+    form_class = JoinMeetingForm
+    success_url = reverse_lazy('students:dashboard')
 
     def form_valid(self, form):
-        # Handle the form submission, e.g., join the meeting using the room ID
         room_id = form.cleaned_data['roomID']
-        # Implement logic to handle the room ID and join the meeting
-        return super().form_valid(form)
-
+        return redirect('students:meeting_room', room_id=room_id)
 
 class DashboardView(StudentTestMixin, TemplateView):
     template_name = "students/dashboard.html"
 
-
 def event_list(request):
     return render(request, "students/event_list.html")
-
 
 def ClassroomDetailView(request, code):
     context_dict = {}
@@ -51,22 +44,17 @@ def ClassroomDetailView(request, code):
     context_dict["classroom"] = room
     return render(request, "students/classroom_detail.html", context=context_dict)
 
-
 def ResourcesView(request, pk):
     context_dict = {}
     section = get_object_or_404(Section, pk=pk)
-    print(section)
     context_dict["section"] = section
     return render(request, "students/resources.html", context=context_dict)
-
 
 def AssignmentsView(request, pk):
     context_dict = {}
     section = get_object_or_404(Section, pk=pk)
-    print(section)
     context_dict["section"] = section
     return render(request, "students/assignments.html", context=context_dict)
-
 
 class AssignmentSubmissionCreateView(CreateView):
     model = AssignmentSubmission
@@ -83,7 +71,6 @@ class AssignmentSubmissionCreateView(CreateView):
             "students:assignments",
             kwargs={"pk": Assignment.objects.get(pk=self.kwargs["pk"]).section.pk},
         )
-
 
 def MyAssignmentView(request, pk):
     context_dict = {}
@@ -108,7 +95,6 @@ def MyAssignmentView(request, pk):
     else:
         return redirect("students:submit_assignment", pk=pk)
 
-
 class AssignmentSubmissionDeleteView(DeleteView):
     model = AssignmentSubmission
     template_name = "students/deletesubmission.html"
@@ -118,7 +104,6 @@ class AssignmentSubmissionDeleteView(DeleteView):
             "students:assignments", kwargs={"pk": self.object.assignment.section.pk}
         )
 
-
 def joinClassroomView(request):
     form = JoinClassroomForm()
 
@@ -127,25 +112,24 @@ def joinClassroomView(request):
 
         if form.is_valid():
             code = form.cleaned_data["code"]
-            print(code)
             if Classroom.objects.filter(code=code).exists():
-                print("Exists", form.cleaned_data["code"])
-
                 if request.user.students.classrooms.filter(code=code).exists():
-                    print("User already a member")
                     return HttpResponseRedirect(reverse("students:dashboard"))
                 else:
-                    print("User not a member")
                     request.user.students.classrooms.add(
                         Classroom.objects.filter(code=code).first()
                     )
-                    print("User joined the classroom")
                     return HttpResponseRedirect(reverse("students:dashboard"))
-            else:
-                print("Classroom dosent exist")
     return render(request, "students/join_classroom.html", {"form": form})
-
 
 def LeaveClassroomView(request, code):
     request.user.students.classrooms.remove(Classroom.objects.filter(code=code).first())
     return HttpResponseRedirect(reverse("students:dashboard"))
+
+class MeetingRoomView(TemplateView):
+    template_name = 'students/meeting_room.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['room_id'] = self.kwargs['room_id']
+        return context
